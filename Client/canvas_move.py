@@ -1,4 +1,4 @@
-from contracts.CheckerType import CheckerType
+from contracts.checker_type import CheckerType
 
 
 class CanvasMove:

@@ -1,17 +1,16 @@
 from PIL import Image, ImageTk
 from time import sleep
 import tkinter as tk
-from CanvasMove import CanvasMove
-from contracts.CheckerType import CheckerType
+from canvas_move import CanvasMove
+from contracts.checker_type import CheckerType
 
 
 class CanvasChecker:
-
     _icons_files = {
-            CheckerType.BLACK: 'images/black.png',
-            CheckerType.WHITE: 'images/white.png',
-            CheckerType.BLACK_SUPER: 'images/black_super.png',
-            CheckerType.WHITE_SUPER: 'images/white_super.png',
+        CheckerType.BLACK: 'images/black.png',
+        CheckerType.WHITE: 'images/white.png',
+        CheckerType.BLACK_SUPER: 'images/black_super.png',
+        CheckerType.WHITE_SUPER: 'images/white_super.png',
     }
 
     def __init__(self, canvas: tk.Canvas, number: int, x: int, y: int, size: int, checker_type: CheckerType):
@@ -52,7 +51,6 @@ class CanvasChecker:
                                                   self.y * self._size + self._size // 2,
                                                   image=self._icon_png)
             self._canvas.update()
-
 
     def set_possible_moves(self, moves: list[CanvasMove]):
         self.moves = moves

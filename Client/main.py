@@ -1,5 +1,5 @@
 import tkinter as tk
-from Field import Field
+from CanvasField import CanvasField
 
 cell_size = 60
 field_size = cell_size * 8
@@ -10,7 +10,7 @@ if __name__ == '__main__':
     canvas = tk.Canvas(screen, width=field_size, height=field_size)
     canvas.pack()
 
-    field = Field(canvas, cell_size)
+    field = CanvasField(canvas, cell_size)
     field._draw_cells()
     field._init_checkers()
 

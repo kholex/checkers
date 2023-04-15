@@ -4,7 +4,9 @@ import asyncio
 import threading
 import json
 
+from canvas_move import CanvasMove
 from contracts.checker import Checker
+from contracts.move import Move
 
 cell_size = 60
 field_size = cell_size * 8
@@ -24,8 +26,15 @@ async def server_communication(reader, writer, canvas_field: CanvasField, receiv
                 if command_json["Type"] == "FieldState":
                     checkers = [Checker.checker_decoder(checker_json) for checker_json in command_json["Checkers"]]
                     canvas_field.init_checkers(checkers)
-                    continue
-                await receive_queue.put("Hellow")
+                elif command_json["Type"] == "Move":
+                    move = Move.move_decoder(command_json["Move"])
+                    checker_to_move = canvas_field.checkers[move.checker_num]
+                    checker_to_remove_icon = None
+                    if move.remove_checker_num is not None:
+                        checker_to_remove = canvas_field.checkers[move.remove_checker_num]
+                        checker_to_remove_icon = checker_to_remove.icon
+                    checker_to_move.move(CanvasMove(move.x, move.y, move.new_type,
+                                                    move.remove_checker_num, checker_to_remove_icon))
             elif q is receive:
                 receive = asyncio.create_task(receive_queue.get())
                 writer.write(f"{q.result()}\n".encode())

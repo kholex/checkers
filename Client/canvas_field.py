@@ -14,7 +14,7 @@ class CanvasField:
         self._canvas = canvas
         self._cell_size = cell_size
         self._size = cell_size * 8
-        self._checkers: dict[int, CanvasChecker] = {}
+        self.checkers: dict[int, CanvasChecker] = {}
         self._selected_checker: CanvasChecker = None
         self._canvas.bind("<Button-1>", self.click)
         self._draw_cells()
@@ -28,29 +28,20 @@ class CanvasField:
                 self._canvas.create_rectangle(x_0, y_0, x_1, y_1, fill=(black if (i + j) % 2 == 0 else white), width=0)
 
     def init_checkers(self, checkers: list[Checker]):
-        # TODO: чистить поле от предыдущих шашек
-        self._checkers.clear()
+        for checker in self.checkers.values():
+            checker.clear()
+
+        self.checkers.clear()
         for checker in checkers:
-            self._checkers[checker.checker_num] = CanvasChecker(
+            self.checkers[checker.checker_num] = CanvasChecker(
                 self._canvas, checker.checker_num, checker.x, checker.y, self._cell_size, checker.checker_type)
         for checker in checkers:
             moves = [CanvasMove(move.x, move.y, move.new_type,
                                 move.remove_checker_num,
-                                self._checkers[move.remove_checker_num].icon if move.remove_checker_num else None)
+                                self.checkers[move.remove_checker_num].icon if move.remove_checker_num else None)
                      for move in checker.possible_moves]
-            self._checkers[checker.checker_num].set_possible_moves(moves)
-
-    def _init_checkers(self):
-        self._checkers = []
-        for i in range(12):
-            self._checkers.append(CanvasChecker(self._canvas, i, (i % 4) * 2 + (i // 4) % 2, i // 4, self._cell_size,
-                                                CheckerType.WHITE))
-        for i in range(12):
-            self._checkers.append(CanvasChecker(self._canvas, i + 12, (i % 4) * 2 + ((i // 4) + 1) % 2, 5 + i // 4,
-                                                self._cell_size, CheckerType.BLACK))
-
-        self._checkers[15].move(CanvasMove(5, 3))
-        self._checkers[11].set_possible_moves([CanvasMove(4, 4, CheckerType.WHITE_SUPER, 15, self._checkers[15].icon)])
+            self.checkers[checker.checker_num].set_possible_moves(moves)
+        self._canvas.update()
 
     def click(self, event: tk.Event):
         x, y = event.x // self._cell_size, event.y // self._cell_size
@@ -58,7 +49,7 @@ class CanvasField:
         if not (0 <= x <= self._size) and (0 <= y <= self._size):
             return
 
-        selected_checker = [checker for checker in self._checkers.values() if checker.x == x and checker.y == y]
+        selected_checker = [checker for checker in self.checkers.values() if checker.x == x and checker.y == y]
 
         if selected_checker:
             if self._selected_checker is not None:
@@ -75,7 +66,7 @@ class CanvasField:
                     self._selected_checker.move(move)
 
                     if move.remove_checker_num:
-                        del self._checkers[move.remove_checker_num]
+                        del self.checkers[move.remove_checker_num]
                     move_json = json.dumps(Move(self._selected_checker.number, move.x, move.y, move.new_type,
                                                 move.remove_checker_num).__dict__)
 

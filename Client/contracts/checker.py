@@ -14,5 +14,7 @@ class Checker:
 
     @staticmethod
     def checker_decoder(obj):
-        possible_moves = [PossibleMove.possible_move_decoder(move_json) for move_json in obj['possible_moves']]
+        possible_moves = []
+        if 'possible_moves' in obj:
+            possible_moves = [PossibleMove.possible_move_decoder(move_json) for move_json in obj['possible_moves']]
         return Checker(obj['checker_num'], obj['x'], obj['y'], CheckerType(obj['checker_type']), possible_moves)

@@ -27,7 +27,6 @@ class CanvasChecker:
                                               self.y * self._size + self._size // 2,
                                               image=self._icon_png)
         self._possible_moves_selection: list[int] = []
-        self._canvas.update()
 
     def move(self, move: CanvasMove):
         if move.remove_checker_icon:
@@ -58,6 +57,10 @@ class CanvasChecker:
     def clear_possible_moves(self):
         for selection in self._possible_moves_selection:
             self._canvas.delete(selection)
+
+    def clear(self):
+        self._canvas.delete(self.icon)
+        self.clear_possible_moves()
 
     def draw_possible_moves(self):
         for move in self.moves:

@@ -34,7 +34,8 @@ class CanvasField:
         self.checkers.clear()
         for checker in checkers:
             self.checkers[checker.checker_num] = CanvasChecker(
-                self._canvas, checker.checker_num, checker.x, checker.y, self._cell_size, checker.checker_type)
+                self._canvas, checker.checker_num, checker.your_checker, checker.x, checker.y, self._cell_size,
+                checker.checker_type)
         for checker in checkers:
             moves = [CanvasMove(move.x, move.y, move.new_type,
                                 move.remove_checker_num,
@@ -52,6 +53,8 @@ class CanvasField:
         selected_checker = [checker for checker in self.checkers.values() if checker.x == x and checker.y == y]
 
         if selected_checker:
+            if not selected_checker[0].your_checker:
+                return
             if self._selected_checker is not None:
                 self._selected_checker.clear_possible_moves()
 

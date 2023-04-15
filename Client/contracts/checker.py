@@ -5,7 +5,8 @@ from contracts.possible_move import PossibleMove
 
 
 class Checker:
-    def __init__(self, checker_num: int, x: int, y: int, checker_type: CheckerType, possible_moves: list[PossibleMove]):
+    def __init__(self, checker_num: int, your_checker: bool, x: int, y: int, checker_type: CheckerType, possible_moves: list[PossibleMove]):
+        self.your_checker = your_checker
         self.checker_num: int = checker_num
         self.x: int = x
         self.y: int = y
@@ -14,7 +15,9 @@ class Checker:
 
     @staticmethod
     def checker_decoder(obj):
+        checker_num, your_checker, x, y, checker_type = obj['checker_num'], obj['your_checker'], obj['x'], obj['y'],\
+                                                        CheckerType(obj['checker_type'])
         possible_moves = []
         if 'possible_moves' in obj:
             possible_moves = [PossibleMove.possible_move_decoder(move_json) for move_json in obj['possible_moves']]
-        return Checker(obj['checker_num'], obj['x'], obj['y'], CheckerType(obj['checker_type']), possible_moves)
+        return Checker(checker_num, your_checker, x, y, checker_type, possible_moves)

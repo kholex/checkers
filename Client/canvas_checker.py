@@ -13,7 +13,8 @@ class CanvasChecker:
         CheckerType.WHITE_SUPER: 'images/white_super.png',
     }
 
-    def __init__(self, canvas: tk.Canvas, number: int, x: int, y: int, size: int, checker_type: CheckerType):
+    def __init__(self, canvas: tk.Canvas, number: int, your_checker: bool, x: int, y: int, size: int, checker_type: CheckerType):
+        self.your_checker = your_checker
         self.moves: list[CanvasMove] = []
         self.number = number
         self.x = x
@@ -57,6 +58,7 @@ class CanvasChecker:
     def clear_possible_moves(self):
         for selection in self._possible_moves_selection:
             self._canvas.delete(selection)
+        self._possible_moves_selection.clear()
 
     def clear(self):
         self._canvas.delete(self.icon)

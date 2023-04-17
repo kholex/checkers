@@ -2,7 +2,7 @@ from PIL import Image, ImageTk
 from time import sleep
 import tkinter as tk
 from canvas_move import CanvasMove
-from contracts.checker_type import CheckerType
+from contracts.value_objects.checker_type import CheckerType
 
 
 class CanvasChecker:

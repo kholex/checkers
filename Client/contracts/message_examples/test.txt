@@ -1,3 +1,7 @@
-{"Type":"FieldState","Checkers":[{"checker_num":0,"your_checker":true,"x":1,"y":1,"checker_type":0,"possible_moves":[{"x":2,"y":2},{"x":0,"y":2}]},{"checker_num":1,"your_checker":false,"x":3,"y":3,"checker_type":1}]}
-{"Type":"FieldState","Checkers":[{"checker_num":0,"your_checker":true,"x":2,"y":2,"checker_type":0},{"checker_num":1,"your_checker":false,"x":3,"y":3,"checker_type":1,"possible_moves":[{"x":1,"y":1,"remove_checker_num":0}]}]}
-{"Type":"Move","Move":{"checker_num":1,"x":1,"y":1,"remove_checker_num":0}}
+{"type":"authorize_response","result":true}
+{"type":"field_state_command","checkers":[{"checker_num":0,"your_checker":true,"x":1,"y":1,"checker_type":0,"possible_moves":[{"x":2,"y":2},{"x":0,"y":2}]},{"checker_num":1,"your_checker":false,"x":3,"y":3,"checker_type":1}]}
+{"type":"field_state_command","checkers":[{"checker_num":0,"your_checker":true,"x":2,"y":2,"checker_type":0},{"checker_num":1,"your_checker":false,"x":3,"y":3,"checker_type":1,"possible_moves":[{"x":1,"y":1,"remove_checker_num":0}]}]}
+{"type":"move_command","checker_num":1,"x":1,"y":1,"remove_checker_num":0}
+
+
+{"type":"authorize_response","result":false}

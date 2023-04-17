@@ -1,8 +1,9 @@
-from contracts.checker_type import CheckerType
+from contracts.value_objects.checker_type import CheckerType
 
 
-class Move:
+class MoveCommand:
     def __init__(self, checker_num: int, x: int, y: int, new_type: CheckerType = None, remove_checker_num: int = None):
+        self.type = "move_command"
         self.checker_num: int = checker_num
         self.x: int = x
         self.y: int = y
@@ -15,4 +16,4 @@ class Move:
         new_type = CheckerType(obj['new_type']) if 'new_type' in obj else None
         remove_checker_num = obj['remove_checker_num'] if 'remove_checker_num' in obj else None
 
-        return Move(checker_num, x, y, new_type, remove_checker_num)
+        return MoveCommand(checker_num, x, y, new_type, remove_checker_num)

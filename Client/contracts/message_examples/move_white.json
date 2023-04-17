@@ -1,9 +1,7 @@
 {
-  "Type": "Move",
-  "Move": {
-    "checker_num": 1,
-    "x": 1,
-    "y": 1,
-    "remove_checker_num": 0
-  }
+  "type": "move_command",
+  "checker_num": 1,
+  "x": 1,
+  "y": 1,
+  "remove_checker_num": 0
 }

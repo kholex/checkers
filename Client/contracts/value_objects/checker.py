@@ -1,7 +1,5 @@
-import json
-
-from contracts.checker_type import CheckerType
-from contracts.possible_move import PossibleMove
+from contracts.value_objects.checker_type import CheckerType
+from contracts.value_objects.possible_move import PossibleMove
 
 
 class Checker:

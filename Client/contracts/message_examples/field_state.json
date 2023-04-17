@@ -1,6 +1,6 @@
 {
-  "Type": "FieldState",
-  "Checkers": [
+  "type": "field_state_command",
+  "checkers": [
     {
       "checker_num": 0,
       "your_checker": true,

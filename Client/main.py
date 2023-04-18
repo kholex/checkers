@@ -10,7 +10,6 @@ from canvas_move import CanvasMove
 from contracts.authorize_command import AuthorizeCommand
 from contracts.authorize_response import AuthorizeResponse
 from contracts.field_state_command import FieldStateCommand
-from contracts.value_objects.checker import Checker
 from contracts.move_command import MoveCommand
 
 cell_size = 60
@@ -30,10 +29,10 @@ async def server_communication(reader, writer, canvas_field: CanvasField, receiv
                 request = q.result().decode().strip()
                 command_json = json.loads(request)
                 if command_json["type"] == "field_state_command":
-                    field_state = FieldStateCommand.field_state_decoder(command_json)
+                    field_state = FieldStateCommand.from_json(command_json)
                     canvas_field.init_checkers(field_state.checkers)
                 elif command_json["type"] == "move_command":
-                    move = MoveCommand.move_decoder(command_json)
+                    move = MoveCommand.from_json(command_json)
                     checker_to_move = canvas_field.checkers[move.checker_num]
                     checker_to_remove_icon = None
                     if move.remove_checker_num is not None:
@@ -42,7 +41,7 @@ async def server_communication(reader, writer, canvas_field: CanvasField, receiv
                     checker_to_move.move(CanvasMove(move.x, move.y, move.new_type,
                                                     move.remove_checker_num, checker_to_remove_icon))
                 elif command_json["type"] == "authorize_response":
-                    authorize = AuthorizeResponse.authorize_response_decoder(command_json)
+                    authorize = AuthorizeResponse.from_json(command_json)
                     if not authorize.result:
                         login_entry['state'] = tk.NORMAL
                         login_button['state'] = tk.NORMAL
@@ -98,7 +97,7 @@ def login_form(screen: tk.Tk, queue: asyncio.Queue):
     combobox.grid(row=0, column=2, sticky="nsew")
 
     def try_authorize(login):
-        authorize_command_json = json.dumps(AuthorizeCommand(login.get()).__dict__)
+        authorize_command_json = AuthorizeCommand(login.get()).to_json()
         queue.put_nowait(authorize_command_json)
         queue._loop._write_to_self()
         login_button['state'] = tk.DISABLED

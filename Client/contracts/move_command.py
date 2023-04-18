@@ -1,3 +1,4 @@
+import json
 from contracts.value_objects.checker_type import CheckerType
 
 
@@ -11,9 +12,12 @@ class MoveCommand:
         self.remove_checker_num: int = remove_checker_num
 
     @staticmethod
-    def move_decoder(obj):
+    def from_json(obj):
         checker_num, x, y = obj['checker_num'], obj['x'], obj['y']
         new_type = CheckerType(obj['new_type']) if 'new_type' in obj else None
         remove_checker_num = obj['remove_checker_num'] if 'remove_checker_num' in obj else None
 
         return MoveCommand(checker_num, x, y, new_type, remove_checker_num)
+
+    def to_json(self):
+        return json.dumps(self.__dict__)

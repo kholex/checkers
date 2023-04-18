@@ -9,7 +9,7 @@ class PossibleMove:
         self.remove_checker_num: int = remove_checker_num
 
     @staticmethod
-    def possible_move_decoder(obj):
+    def from_json(obj):
         return PossibleMove(obj['x'], obj['y'],
                             obj['new_type'] if 'new_type' in obj else None,
                             obj['remove_checker_num'] if 'remove_checker_num' in obj else None)

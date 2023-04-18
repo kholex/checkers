@@ -1,3 +1,4 @@
+import json
 from contracts.value_objects.checker import Checker
 
 
@@ -7,6 +8,9 @@ class FieldStateCommand:
         self.checkers = checkers
 
     @staticmethod
-    def field_state_decoder(obj):
-        checkers = [Checker.checker_decoder(checker_json) for checker_json in obj["checkers"]]
+    def from_json(obj):
+        checkers = [Checker.from_json(checker_json) for checker_json in obj["checkers"]]
         return FieldStateCommand(checkers)
+
+    def to_json(self):
+        return json.dumps(self.__dict__)

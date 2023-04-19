@@ -1,4 +1,5 @@
 import unittest
+from copy import deepcopy
 
 from server.utils import generate_new_game, Checker, CheckerType, PossibleMove
 
@@ -6,7 +7,9 @@ from server.utils import generate_new_game, Checker, CheckerType, PossibleMove
 class TestServerUtils(unittest.TestCase):
 
     def test_generate_new_game(self):
-        checker_list = generate_new_game()
+        
+        white_checkers_list, black_checkers_list = generate_new_game()
+
         checker_list_true = [
             Checker(checker_num=0, your_checker=None, x=0, y=0, checker_type=CheckerType.WHITE, possible_moves=[]),
             Checker(checker_num=1, your_checker=None, x=0, y=2, checker_type=CheckerType.WHITE, possible_moves=[PossibleMove(x=1, y=3)]),
@@ -34,7 +37,22 @@ class TestServerUtils(unittest.TestCase):
             Checker(checker_num=23, your_checker=None, x=7, y=7, checker_type=CheckerType.BLACK, possible_moves=[]),
         ]
 
-        self.assertListEqual(checker_list, checker_list_true)
+        white_checkers_list_true = deepcopy(checker_list_true)
+        for checker in white_checkers_list_true:
+            if checker.checker_type == CheckerType.WHITE:
+                checker.your_checker = True
+            elif checker.checker_type == CheckerType.BLACK:
+                checker.your_checker = False
+        
+        black_checkers_list_true = deepcopy(checker_list_true)
+        for checker in black_checkers_list_true:
+            if checker.checker_type == CheckerType.WHITE:
+                checker.your_checker = False
+            elif checker.checker_type == CheckerType.BLACK:
+                checker.your_checker = True
+
+        self.assertListEqual(white_checkers_list, white_checkers_list_true)
+        self.assertListEqual(black_checkers_list, black_checkers_list_true)
 
 
 if __name__ == "__main__":

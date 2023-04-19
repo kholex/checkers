@@ -13,8 +13,7 @@ class Checker:
         self.possible_moves: list[PossibleMove] = possible_moves
     
     def __repr__(self):
-        # TODO: mayby add your_checker
-        return f"Checker(num={self.checker_num}, x={self.x}, y={self.y}, color={self.checker_type.name}, possible_moves={self.possible_moves})"
+        return f"Checker(num={self.checker_num}, your_checker={self.your_checker}, x={self.x}, y={self.y}, color={self.checker_type.name}, possible_moves={self.possible_moves})"
     
     def __str__(self):
         return self.__repr__()

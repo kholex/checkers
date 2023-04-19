@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-import asyncio
+import sys
 import shlex
+import asyncio
 
-from utils import generate_new_game  # TODO: fix relative import
+sys.path.insert(0, ".")  # TODO: remove it
+from server.utils import generate_new_game
 
 
 clients = {}
@@ -39,11 +41,11 @@ async def chat(reader, writer):
                             for key in clients:
                                 if clients_login[key] == command_args[0]:
                                     await clients[key].put(f"{me} wants to play with you")
-                                    # send
-                                    print("a", me)
-                                    print("b", key)
-                                    checker_list = generate_new_game()
-                                    print("checker_list")#, checker_list)
+                                    # TODO: send
+                                    white_checkers_list, black_checkers_list = generate_new_game()
+                                    print("white checkers list:", white_checkers_list)
+                                    print()
+                                    print("black checkers list:", black_checkers_list)
                         else:
                             await clients[me].put(f"There is no client with login {command_args[0]}!")
                     else:

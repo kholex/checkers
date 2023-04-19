@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from Client.contracts.value_objects.checker import Checker
 from Client.contracts.value_objects.checker_type import CheckerType
 from Client.contracts.value_objects.possible_move import PossibleMove
@@ -6,7 +8,7 @@ from Client.contracts.value_objects.possible_move import PossibleMove
 def generate_new_game():
 
     i = 0
-    checker_list = []
+    white_checkers_list = []
     
     for x in range(8):
         if x % 2 == 0:
@@ -18,8 +20,10 @@ def generate_new_game():
             # checker_type
             if y < 3:
                 checker_type = CheckerType.WHITE
+                your_checker = True
             elif y > 4:
                 checker_type = CheckerType.BLACK
+                your_checker = False
             else:
                 raise RuntimeError("Checkers initialization error, impossible position.")
 
@@ -38,13 +42,17 @@ def generate_new_game():
         
             checker = Checker(
                 checker_num=i,
-                your_checker=None,  # TODO
+                your_checker=your_checker,
                 x=x,
                 y=y,
                 checker_type=checker_type,
                 possible_moves=possible_moves,
             )
-            checker_list.append(checker)
+            white_checkers_list.append(checker)
             i += 1
+    
+    black_checkers_list = deepcopy(white_checkers_list)
+    for checker in black_checkers_list:
+        checker.your_checker = not checker.your_checker
 
-    return checker_list
+    return white_checkers_list, black_checkers_list

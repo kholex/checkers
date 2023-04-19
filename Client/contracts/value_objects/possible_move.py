@@ -1,4 +1,4 @@
-from contracts.value_objects.checker_type import CheckerType
+from Client.contracts.value_objects.checker_type import CheckerType
 
 
 class PossibleMove:

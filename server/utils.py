@@ -1,10 +1,5 @@
-# TODO: remove mock
-class Checker:
-    pass
-
-# TODO: remove mock
-class CheckerType:
-    pass
+from Client.contracts.value_objects.checker import Checker
+from Client.contracts.value_objects.checker_type import CheckerType
 
 
 def generate_new_game():
@@ -25,9 +20,8 @@ def generate_new_game():
             elif y > 4:
                 checker_type = CheckerType.BLACK
             else:
-                1/0  # TODO: raise error
+                raise RuntimeError("Checkers initialization error, impossible position.")
         
-
             checker = Checker(
                 checker_num=i,
                 your_checker=None,  # TODO
@@ -38,4 +32,5 @@ def generate_new_game():
             )
             checker_list.append(checker)
             i += 1
+
     return checker_list

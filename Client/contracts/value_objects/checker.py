@@ -1,5 +1,5 @@
-from contracts.value_objects.checker_type import CheckerType
-from contracts.value_objects.possible_move import PossibleMove
+from Client.contracts.value_objects.checker_type import CheckerType
+from Client.contracts.value_objects.possible_move import PossibleMove
 
 
 class Checker:
@@ -11,6 +11,27 @@ class Checker:
         self.y: int = y
         self.checker_type: CheckerType = checker_type
         self.possible_moves: list[PossibleMove] = possible_moves
+    
+    def __repr__(self):
+        # TODO: mayby add checker_num, your_checker and possible_moves
+        return f"Checker(x={self.x}, y={self.y}, color={self.checker_type.name})"
+    
+    def __str__(self):
+        return self.__repr__()
+    
+    def __eq__(self, other):
+        if not isinstance(other, Checker):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+        
+        return all([
+            self.checker_num == other.checker_num,
+            self.your_checker == other.your_checker,
+            self.x == other.x,
+            self.y == other.y,
+            self.checker_type == other.checker_type,
+            # self.possible_moves == other.possible_moves,  # TODO: fix it
+        ])
 
     @staticmethod
     def from_json(obj):

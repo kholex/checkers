@@ -2,17 +2,16 @@
 import asyncio
 import shlex
 
+from utils import generate_new_game  # TODO: fix relative import
+
+
 clients = {}
 clients_login = {}
 
 
-def generate_new_game():
-    pass
-
-
 async def chat(reader, writer):
     me = "{}:{}".format(*writer.get_extra_info('peername'))
-    print(me)
+    print("tmp", me)
     clients[me] = asyncio.Queue()
     send = asyncio.create_task(reader.readline())
     receive = asyncio.create_task(clients[me].get())
@@ -25,7 +24,7 @@ async def chat(reader, writer):
                 request = q.result().decode().strip()
                 command = shlex.split(request)[0]
                 command_args = shlex.split(request)[1:]
-                if command == "login":
+                if command == "login":  # TODO: auth
                     login = command_args[0]
                     if login not in clients_login.values():
                         clients_login[me] = login
@@ -34,15 +33,17 @@ async def chat(reader, writer):
                         await clients[me].put(f"Login {login} already in use")
                 elif command == "who":
                     await clients[me].put('\n'.join(clients_login.values()))
-                elif command == "play_with":
+                elif command == "play":
                     if me in clients_login:
                         if command_args[0] in clients_login.values():
                             for key in clients:
                                 if clients_login[key] == command_args[0]:
                                     await clients[key].put(f"{me} wants to play with you")
                                     # send
-                                    print(me)
-                                    print(key)
+                                    print("a", me)
+                                    print("b", key)
+                                    checker_list = generate_new_game()
+                                    print("checker_list")#, checker_list)
                         else:
                             await clients[me].put(f"There is no client with login {command_args[0]}!")
                     else:

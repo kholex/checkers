@@ -13,8 +13,8 @@ class Checker:
         self.possible_moves: list[PossibleMove] = possible_moves
     
     def __repr__(self):
-        # TODO: mayby add checker_num, your_checker and possible_moves
-        return f"Checker(x={self.x}, y={self.y}, color={self.checker_type.name})"
+        # TODO: mayby add your_checker
+        return f"Checker(num={self.checker_num}, x={self.x}, y={self.y}, color={self.checker_type.name}, possible_moves={self.possible_moves})"
     
     def __str__(self):
         return self.__repr__()
@@ -30,7 +30,8 @@ class Checker:
             self.x == other.x,
             self.y == other.y,
             self.checker_type == other.checker_type,
-            # self.possible_moves == other.possible_moves,  # TODO: fix it
+            len(self.possible_moves) == len(other.possible_moves),
+            all([self.possible_moves[i] == other.possible_moves[i] for i in range(len(self.possible_moves))]),
         ])
 
     @staticmethod

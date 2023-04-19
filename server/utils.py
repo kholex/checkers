@@ -1,5 +1,6 @@
 from Client.contracts.value_objects.checker import Checker
 from Client.contracts.value_objects.checker_type import CheckerType
+from Client.contracts.value_objects.possible_move import PossibleMove
 
 
 def generate_new_game():
@@ -21,6 +22,19 @@ def generate_new_game():
                 checker_type = CheckerType.BLACK
             else:
                 raise RuntimeError("Checkers initialization error, impossible position.")
+
+            # possible moves
+            possible_moves = []
+            if y == 2:  # white
+                if x != 0:
+                    possible_moves.append(PossibleMove(x=x-1, y=3))
+                if x != 7:
+                    possible_moves.append(PossibleMove(x=x+1, y=3))
+            elif y == 5:
+                if x != 0:
+                    possible_moves.append(PossibleMove(x=x-1, y=4))
+                if x != 7:
+                    possible_moves.append(PossibleMove(x=x+1, y=4))
         
             checker = Checker(
                 checker_num=i,
@@ -28,7 +42,7 @@ def generate_new_game():
                 x=x,
                 y=y,
                 checker_type=checker_type,
-                possible_moves=None,  # TODO
+                possible_moves=possible_moves,
             )
             checker_list.append(checker)
             i += 1

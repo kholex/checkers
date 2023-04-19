@@ -1,0 +1,26 @@
+{
+  "type": "field_state_command",
+  "checkers": [
+    {
+      "checker_num": 0,
+      "your_checker": true,
+      "x": 2,
+      "y": 2,
+      "checker_type": 0
+    },
+    {
+      "checker_num": 1,
+      "your_checker": false,
+      "x": 3,
+      "y": 3,
+      "checker_type": 1,
+      "possible_moves": [
+        {
+          "x": 1,
+          "y": 1,
+          "remove_checker_num": 0
+        }
+      ]
+    }
+  ]
+}

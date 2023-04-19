@@ -1,9 +1,13 @@
+"""This module describes part of contracts with server about checkers moves."""
 import json
 from contracts.value_objects.checker_type import CheckerType
 
 
 class MoveCommand:
+    """Command for checker move to (user) and from (enemy) server."""
+
     def __init__(self, checker_num: int, x: int, y: int, new_type: CheckerType = None, remove_checker_num: int = None):
+        """Initialize command for checker move."""
         self.type = "move_command"
         self.checker_num: int = checker_num
         self.x: int = x
@@ -13,6 +17,7 @@ class MoveCommand:
 
     @staticmethod
     def from_json(obj):
+        """Deserialize object from json."""
         checker_num, x, y = obj['checker_num'], obj['x'], obj['y']
         new_type = CheckerType(obj['new_type']) if 'new_type' in obj else None
         remove_checker_num = obj['remove_checker_num'] if 'remove_checker_num' in obj else None
@@ -20,4 +25,5 @@ class MoveCommand:
         return MoveCommand(checker_num, x, y, new_type, remove_checker_num)
 
     def to_json(self):
+        """Serialize object to json."""
         return json.dumps(self.__dict__)

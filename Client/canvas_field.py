@@ -1,3 +1,4 @@
+"""This module realize work with canvas for checkers field."""
 import asyncio
 import tkinter as tk
 from contracts.value_objects.checker import Checker
@@ -7,14 +8,17 @@ from contracts.move_command import MoveCommand
 
 
 class CanvasField:
+    """Canvas for field with checkers."""
+
     def __init__(self, canvas: tk.Canvas, cell_size: int, receive_queue: asyncio.Queue):
+        """Initialize field canvas."""
         self.canvas = canvas
         self.cell_size = cell_size
         self._receive_queue = receive_queue
         self.size = cell_size * 8
         self.checkers: dict[int, CanvasChecker] = {}
         self._selected_checker: CanvasChecker = None
-        self.canvas.bind("<Button-1>", self.click)
+        self.canvas.bind("<Button-1>", self._click)
         self._draw_cells()
 
     def _draw_cells(self):
@@ -26,6 +30,7 @@ class CanvasField:
                 self.canvas.create_rectangle(x_0, y_0, x_1, y_1, fill=(black if (i + j) % 2 == 0 else white), width=0)
 
     def init_checkers(self, checkers: list[Checker]):
+        """Initialize checkers on field."""
         for checker in self.checkers.values():
             checker.clear()
 
@@ -42,7 +47,8 @@ class CanvasField:
             self.checkers[checker.checker_num].set_possible_moves(moves)
         self.canvas.update()
 
-    def click(self, event: tk.Event):
+    def _click(self, event: tk.Event):
+        """Click by canvas event handler."""
         x, y = event.x // self.cell_size, event.y // self.cell_size
 
         if not (0 <= x <= self.size) and (0 <= y <= self.size):

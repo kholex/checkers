@@ -1,3 +1,4 @@
+"""This module is entry point for client app."""
 import tkinter as tk
 from tkinter import ttk
 from canvas_field import CanvasField
@@ -16,8 +17,8 @@ cell_size = 60
 field_size = cell_size * 8
 
 
-async def server_communication(reader, writer, canvas_field: CanvasField, receive_queue: asyncio.Queue,
-                               login_entry: tk.Entry, login_button: tk.Button):
+async def _server_communication(reader, writer, canvas_field: CanvasField, receive_queue: asyncio.Queue,
+                                login_entry: tk.Entry, login_button: tk.Button):
     send = asyncio.create_task(reader.readline())
     receive = asyncio.create_task(receive_queue.get())
     command = ""
@@ -56,8 +57,8 @@ async def server_communication(reader, writer, canvas_field: CanvasField, receiv
     await writer.wait_closed()
 
 
-async def start_communication(canvas_field: CanvasField, receive_queue: asyncio.Queue,
-                              login_entry: tk.Entry, login_button: tk.Button):
+async def _start_communication(canvas_field: CanvasField, receive_queue: asyncio.Queue,
+                               login_entry: tk.Entry, login_button: tk.Button):
     connecting_label = None
     while True:
         if connecting_label is None:
@@ -76,13 +77,13 @@ async def start_communication(canvas_field: CanvasField, receive_queue: asyncio.
             canvas_field.canvas.delete(connecting_label)
             canvas_field.canvas.delete(connecting_rectangle)
             connecting_label = None
-            await server_communication(reader, writer, canvas_field, receive_queue, login_entry, login_button)
+            await _server_communication(reader, writer, canvas_field, receive_queue, login_entry, login_button)
         except Exception as ex:
             print(ex)
             await asyncio.sleep(1)
 
 
-def login_form(screen: tk.Tk, queue: asyncio.Queue):
+def _login_form(screen: tk.Tk, queue: asyncio.Queue):
     login_canvas = tk.Canvas(screen, width=field_size, height=field_size // 5)
     login_canvas.pack()
     # username label and text entry box
@@ -114,7 +115,7 @@ def login_form(screen: tk.Tk, queue: asyncio.Queue):
     return login_entry, login_button
 
 
-def main() -> None:
+def _main() -> None:
     screen = tk.Tk()
     canvas = tk.Canvas(screen, width=field_size, height=field_size)
     canvas.pack()
@@ -122,15 +123,15 @@ def main() -> None:
     queue = asyncio.Queue()
     field = CanvasField(canvas, cell_size, queue)
 
-    login_entry, login_button = login_form(screen, queue)
+    login_entry, login_button = _login_form(screen, queue)
 
     screen.title('Checkers')
     screen.resizable(0, 0)
 
-    screen.after(0, threading.Thread(target=asyncio.run, args=(start_communication(field, queue, login_entry,
-                                                                                   login_button),)).start())
+    screen.after(0, threading.Thread(target=asyncio.run, args=(_start_communication(field, queue, login_entry,
+                                                                                    login_button),)).start())
     screen.mainloop()
 
 
 if __name__ == '__main__':
-    main()
+    _main()

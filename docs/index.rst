@@ -3,20 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to DateTime App's documentation!
+Welcome to Checkers App's documentation!
 ============================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   tech
    README
 
-.. image:: _static/snap.png
 
-This simple application allows you to test various :py:func:`time.strftime` style date formats and display one, three or twelve month calendar.
-
-See
+Приложение для игры в шашки по сети.
 
 Indices and tables
 ==================

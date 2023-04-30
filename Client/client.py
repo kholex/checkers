@@ -117,6 +117,7 @@ def _login_form(screen: tk.Tk, queue: asyncio.Queue):
 
 
 def main() -> None:
+    """App entrypoint."""
     screen = tk.Tk()
     canvas = tk.Canvas(screen, width=field_size, height=field_size)
     canvas.pack()

@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'DateTime App'
-copyright = '2021, Fr. Br. George'
-author = 'Fr. Br. George'
+project = 'Checkers App'
+copyright = '2023, A.V. Kholodov'
+author = 'A.V. Kholodov'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'
@@ -32,10 +32,8 @@ release = '0.1'
 # ones.
 extensions = [
         "sphinx.ext.autodoc",
-        "sphinx.ext.intersphinx",
-        "sphinx_markdown_builder"
+        "sphinx.ext.intersphinx"
 ]
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -62,6 +60,6 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}

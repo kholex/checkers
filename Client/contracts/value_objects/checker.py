@@ -19,8 +19,8 @@ class Checker:
     @staticmethod
     def from_json(obj):
         """Deserialize object from json."""
-        checker_num, your_checker, x, y, checker_type = obj['checker_num'], obj['your_checker'], obj['x'], obj['y'],\
-                                                        CheckerType(obj['checker_type'])
+        checker_num, your_checker = obj['checker_num'], obj['your_checker']
+        x, y, checker_type = obj['x'], obj['y'], CheckerType(obj['checker_type'])
         possible_moves = []
         if 'possible_moves' in obj:
             possible_moves = [PossibleMove.from_json(move_json) for move_json in obj['possible_moves']]

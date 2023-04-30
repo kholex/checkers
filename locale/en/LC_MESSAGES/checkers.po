@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-04-30 18:16+0300\n"
+"POT-Creation-Date: 2023-04-30 20:48+0300\n"
 "PO-Revision-Date: 2023-04-21 21:39+0300\n"
 "Last-Translator: Kholodov A.V. kholodov98@mail.ru\n"
 "Language: en\n"
@@ -30,7 +30,7 @@ msgstr "User"
 msgid "Login"
 msgstr "Login"
 
-#: Client/client.py:129
+#: Client/client.py:130
 msgid "Checkers"
 msgstr "Checkers"
 

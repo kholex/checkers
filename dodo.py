@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-'''
-Default: create wheel
-'''
+"""Default: create wheel."""
 import glob
 import tomli
 from doit.tools import create_folder
@@ -10,7 +8,7 @@ DOIT_CONFIG = {'default_tasks': ['all']}
 
 
 def dumpkeys(infile, table, outfile):
-    '''Dumps TOML table keys one per line'''
+    """Dump TOML table keys one per line."""
     with open(infile, "rb") as fin:
         full = tomli.load(fin)
     with open(outfile, "w") as fout:
@@ -24,11 +22,11 @@ def task_gitclean():
     }
 
 
-# def task_html():
-#     """Make HTML documentationi."""
-#     return {
-#         'actions': ['sphinx-build -M html docs build'],
-#     }
+def task_html():
+    """Make HTML documentationi."""
+    return {
+        'actions': ['sphinx-build -M html docs build'],
+    }
 
 
 # def task_test():
@@ -83,13 +81,13 @@ def task_wheel():
     }
 
 
-# def task_app():
-#     """Run application."""
-#     import AppBase.DateTime
-#     return {
-#             'actions': [AppBase.DateTime.main],
-#             'task_dep': ['mo'],
-#            }
+def task_app():
+    """Run application."""
+    import Client.client
+    return {
+            'actions': [Client.client.main],
+            'task_dep': ['mo'],
+           }
 
 
 def task_style():
@@ -118,7 +116,7 @@ def task_all():
     """Perform all build task."""
     return {
         'actions': None,
-        'task_dep': ['check', 'wheel'] # , 'html']
+        'task_dep': ['check', 'wheel', 'html']
     }
 
 
@@ -131,18 +129,9 @@ def task_buildreq():
 
 
 def task_requirements():
-    """Dump Pipfile requirements"""
+    """Dump Pipfile requirements."""
     return {
         'actions': [(dumpkeys, ["Pipfile", "packages", "requirements.txt"])],
         'file_dep': ['Pipfile'],
         'targets': ['requirements.txt'],
-    }
-
-
-def task_publish():
-    """Publish distros on test.pypi.org"""
-    return {
-        'task_dep': ['sdist', 'wheel'],
-        'actions': ['twine upload -u __token__ --repository testpypi dist/*'],
-        'verbosity': 2
     }

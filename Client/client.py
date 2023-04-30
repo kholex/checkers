@@ -1,18 +1,22 @@
 """This module is entry point for client app."""
-import tkinter as tk
-from canvas_field import CanvasField
+from .canvas_field import CanvasField
+from .canvas_move import CanvasMove
 import asyncio
-import threading
-import json
-from functools import partial
-
-from canvas_move import CanvasMove
-from contracts.authorize_command import AuthorizeCommand
-from contracts.authorize_response import AuthorizeResponse
-from contracts.field_state_command import FieldStateCommand
-from contracts.move_command import MoveCommand
 import gettext
-translation = gettext.translation('checkers', 'locale', fallback=False, languages=['ru', 'en'])
+import json
+import threading
+import tkinter as tk
+from functools import partial
+import locale
+import os
+
+from .contracts.authorize_command import AuthorizeCommand
+from .contracts.authorize_response import AuthorizeResponse
+from .contracts.field_state_command import FieldStateCommand
+from .contracts.move_command import MoveCommand
+
+locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
+translation = gettext.translation('checkers', os.path.dirname(__file__), fallback=True, languages=['ru', 'en'])
 _ = translation.gettext
 
 cell_size = 60
@@ -112,7 +116,7 @@ def _login_form(screen: tk.Tk, queue: asyncio.Queue):
     return login_entry, login_button
 
 
-def _main() -> None:
+def main() -> None:
     screen = tk.Tk()
     canvas = tk.Canvas(screen, width=field_size, height=field_size)
     canvas.pack()
@@ -128,7 +132,3 @@ def _main() -> None:
     screen.after(0, threading.Thread(target=asyncio.run, args=(_start_communication(field, queue, login_entry,
                                                                                     login_button),)).start())
     screen.mainloop()
-
-
-if __name__ == '__main__':
-    _main()

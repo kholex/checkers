@@ -1,5 +1,5 @@
 """This module describes checkers moves by canvas."""
-from contracts.value_objects.checker_type import CheckerType
+from .contracts.value_objects.checker_type import CheckerType
 
 
 class CanvasMove:

@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pillow = "*"
 tk = "*"
+pyfiglet = "*"
 
 [dev-packages]
 doit = "*"
@@ -14,6 +15,9 @@ pydocstyle = "*"
 sphinx = "*"
 build = "*"
 setuptools = "*"
+coverage = "*"
+tomli = "*"
+sphinx-markdown-builder = "*"
 
 [requires]
 python_version = "3.11"

@@ -1,6 +1,6 @@
 """This module describes part of contracts with server about field state."""
 import json
-from contracts.value_objects.checker import Checker
+from .value_objects.checker import Checker
 
 
 class FieldStateCommand:

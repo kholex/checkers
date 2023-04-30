@@ -1,5 +1,5 @@
 """This module describes part of contracts with server about possible checkers moves."""
-from contracts.value_objects.checker_type import CheckerType
+from .checker_type import CheckerType
 
 
 class PossibleMove:

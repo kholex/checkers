@@ -1,11 +1,14 @@
+"""This module realize work with checker on canvas."""
 from PIL import Image, ImageTk
 from time import sleep
 import tkinter as tk
-from canvas_move import CanvasMove
-from contracts.value_objects.checker_type import CheckerType
+from .canvas_move import CanvasMove
+from .contracts.value_objects.checker_type import CheckerType
 
 
 class CanvasChecker:
+    """Checker on canvas field."""
+
     _icons_files = {
         CheckerType.BLACK: 'images/black.png',
         CheckerType.WHITE: 'images/white.png',
@@ -13,7 +16,9 @@ class CanvasChecker:
         CheckerType.WHITE_SUPER: 'images/white_super.png',
     }
 
-    def __init__(self, canvas: tk.Canvas, number: int, your_checker: bool, x: int, y: int, size: int, checker_type: CheckerType):
+    def __init__(self, canvas: tk.Canvas, number: int, your_checker: bool, x: int, y: int, size: int,
+                 checker_type: CheckerType):
+        """Initialize checker on canvas."""
         self.your_checker = your_checker
         self.moves: list[CanvasMove] = []
         self.number = number
@@ -30,6 +35,7 @@ class CanvasChecker:
         self._possible_moves_selection: list[int] = []
 
     def move(self, move: CanvasMove):
+        """Move checker to some place on field."""
         if move.remove_checker_icon:
             self._canvas.tag_raise(self.icon, move.remove_checker_icon)
         steps_num = abs(move.x - self.x) * 40
@@ -53,18 +59,22 @@ class CanvasChecker:
             self._canvas.update()
 
     def set_possible_moves(self, moves: list[CanvasMove]):
+        """Set possible moves for checker."""
         self.moves = moves
 
     def clear_possible_moves(self):
+        """Clear possible moves and delete them from canvas if checker was selected."""
         for selection in self._possible_moves_selection:
             self._canvas.delete(selection)
         self._possible_moves_selection.clear()
 
     def clear(self):
+        """Clear all checker elements from canvas."""
         self._canvas.delete(self.icon)
         self.clear_possible_moves()
 
     def draw_possible_moves(self):
+        """Draw possible moves for checker, for example, if user selected checker."""
         for move in self.moves:
             rect = self._canvas.create_rectangle(move.x * self._size, move.y * self._size,
                                                  move.x * self._size + self._size, move.y * self._size + self._size,

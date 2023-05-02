@@ -1,6 +1,6 @@
 """This module describes part of contracts with server about checkers moves."""
 import json
-from contracts.value_objects.checker_type import CheckerType
+from .value_objects.checker_type import CheckerType
 
 
 class MoveCommand:

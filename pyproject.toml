@@ -1,0 +1,36 @@
+[project]
+name = "Checkers"
+version = "0.0.13"
+description = "Exam project for PythonDevelopment2023 course"
+readme = "README.rst"
+requires-python = ">=3.10"
+license = {file = "COPYING"}
+authors = [
+ {name = "Kholodov A.V.", email = "kholodov98@mail.ru"}
+]
+
+keywords = ["tkinter", "project", "example"]
+classifiers = [
+      "Development Status :: 4 - Beta",
+      "Programming Language :: Python :: 3",
+      "License :: OSI Approved :: MIT License",
+      "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = "requirements.txt" }
+
+[project.gui-scripts]
+Checkers = "Client.client:main"
+
+[build-system]
+# TODO dynamic from Pipfile
+requires = ["Sphinx", "build", "coverage", "doit", "flake8", "pydocstyle", "pyfiglet", "setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+Client = "Client"
+
+[tool.setuptools.package-data]
+Client = ["ru/*/*.mo"]

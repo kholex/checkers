@@ -1,10 +1,10 @@
 """This module realize work with canvas for checkers field."""
 import asyncio
 import tkinter as tk
-from contracts.value_objects.checker import Checker
-from canvas_move import CanvasMove
-from canvas_checker import CanvasChecker
-from contracts.move_command import MoveCommand
+from .contracts.value_objects.checker import Checker
+from .canvas_move import CanvasMove
+from .canvas_checker import CanvasChecker
+from .contracts.move_command import MoveCommand
 
 
 class CanvasField:

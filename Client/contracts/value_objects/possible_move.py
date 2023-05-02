@@ -30,10 +30,25 @@ class PossibleMove:
             self.new_type == other.new_type,
             self.remove_checker_num == other.remove_checker_num,
         ])
+    
+    def to_json(self):
+        """Object to json."""
+        res = {
+            "x": self.x,
+            "y": self.y,
+            "remove_checker_num": self.remove_checker_num,
+        }
+
+        if self.new_type:
+            res["new_type"] = self.new_type.value
+        
+        return res
 
     @staticmethod
     def from_json(obj):
         """Deserialize object from json."""
-        return PossibleMove(obj['x'], obj['y'],
-                            obj['new_type'] if 'new_type' in obj else None,
-                            obj['remove_checker_num'] if 'remove_checker_num' in obj else None)
+        return PossibleMove(
+            obj['x'], obj['y'],
+            obj['new_type'] if 'new_type' in obj else None,
+            obj['remove_checker_num'] if 'remove_checker_num' in obj else None,
+        )

@@ -19,4 +19,7 @@ class FieldStateCommand:
 
     def to_json(self):
         """Serialize object to json."""
-        return json.dumps(self.__dict__)
+        return {
+            "type": self.type,
+            "checkers": [checker.to_json() for checker in self.checkers]
+        }

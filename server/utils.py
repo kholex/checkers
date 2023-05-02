@@ -1,14 +1,15 @@
 from copy import deepcopy
+from typing import List, Tuple
 
 from Client.contracts.value_objects.checker import Checker
 from Client.contracts.value_objects.checker_type import CheckerType
 from Client.contracts.value_objects.possible_move import PossibleMove
 
 
-def generate_new_game():
+def generate_new_game() -> Tuple[List[Checker], List[Checker]]:
 
     i = 0
-    white_checkers_list = []
+    white_checkers_list: List[Checker] = []
     
     for x in range(8):
         if x % 2 == 0:

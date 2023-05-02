@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
-import sys
-import shlex
+import json
 import asyncio
 
+import sys
 sys.path.insert(0, ".")  # TODO: remove it
 from server.utils import generate_new_game
+from Client.contracts.field_state_command import FieldStateCommand
+from Client.contracts.value_objects.checker import Checker
 
 
 clients = {}
 clients_login = {}
+client_colors = {}
 
 
 async def chat(reader, writer):
     me = "{}:{}".format(*writer.get_extra_info('peername'))
-    print("tmp", me)
+    print("User:", me)
+
     clients[me] = asyncio.Queue()
     send = asyncio.create_task(reader.readline())
     receive = asyncio.create_task(clients[me].get())
@@ -23,56 +27,48 @@ async def chat(reader, writer):
         for q in done:
             if q is send:
                 send = asyncio.create_task(reader.readline())
-                request = q.result().decode().strip()
-                command = shlex.split(request)[0]
-                command_args = shlex.split(request)[1:]
-                if command == "login":  # TODO: auth
-                    login = command_args[0]
-                    if login not in clients_login.values():
-                        clients_login[me] = login
-                        await clients[me].put(f"Success login as {login}")
-                    else:
-                        await clients[me].put(f"Login {login} already in use")
-                elif command == "who":
-                    await clients[me].put('\n'.join(clients_login.values()))
-                elif command == "play":
-                    if me in clients_login:
-                        if command_args[0] in clients_login.values():
-                            for key in clients:
-                                if clients_login[key] == command_args[0]:
-                                    await clients[key].put(f"{me} wants to play with you")
-                                    # TODO: send
-                                    white_checkers_list, black_checkers_list = generate_new_game()
-                                    print("white checkers list:", white_checkers_list)
-                                    print()
-                                    print("black checkers list:", black_checkers_list)
-                        else:
-                            await clients[me].put(f"There is no client with login {command_args[0]}!")
-                    else:
-                        await clients[me].put(f"Not authorized can't send any messages to other clients!")
-                elif command == "exit":
-                    break
-                else:
-                    for out in clients.values():
-                        if out is not clients[me]:
-                            await out.put(f"{me} {q.result().decode().strip()}")
+                request = json.loads(q.result().decode().strip())
+                command = request["type"]
+                print("Server request:", request)
+                print("Server command:", command)
+
+                if command == "authorize_command":
+
+                    white_checkers_list, black_checkers_list = generate_new_game()
+                    white_checkers_state = FieldStateCommand(white_checkers_list)
+                    black_checkers_state = FieldStateCommand(black_checkers_list)
+
+                    if len(client_colors) == 1:
+                        client_colors["black"] = me
+                        await clients[me].put(json.dumps(black_checkers_state.to_json()))
+                    
+                    if len(client_colors) == 0:
+                        client_colors["white"] = me
+                        await clients[me].put(json.dumps(white_checkers_state.to_json()))
+                    
+                    print("Server client_colors:", client_colors)
+
+                elif command == "move_command":
+                    try:
+                        checker = Checker.from_json(request)
+                        print("checker", checker)
+                    except Exception as tmp:
+                        print("exception", tmp)
+
             elif q is receive:
                 receive = asyncio.create_task(clients[me].get())
                 writer.write(f"{q.result()}\n".encode())
+                print("Server receive:", q.result())
                 await writer.drain()
+
     send.cancel()
     receive.cancel()
-    print(me, "DONE")
+    print("Server done:", me)
+
     del clients[me]
+
     if me in clients_login:
         del clients_login[me]
+        
     writer.close()
     await writer.wait_closed()
-
-
-async def main():
-    server = await asyncio.start_server(chat, '0.0.0.0', 1337)
-    async with server:
-        await server.serve_forever()
-
-asyncio.run(main())

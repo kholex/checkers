@@ -15,6 +15,27 @@ class Checker:
         self.y: int = y
         self.checker_type: CheckerType = checker_type
         self.possible_moves: list[PossibleMove] = possible_moves
+    
+    def __repr__(self):
+        return f"Checker(num={self.checker_num}, your_checker={self.your_checker}, x={self.x}, y={self.y}, color={self.checker_type.name}, possible_moves={self.possible_moves})"
+    
+    def __str__(self):
+        return self.__repr__()
+    
+    def __eq__(self, other):
+        if not isinstance(other, Checker):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+        
+        return all([
+            self.checker_num == other.checker_num,
+            self.your_checker == other.your_checker,
+            self.x == other.x,
+            self.y == other.y,
+            self.checker_type == other.checker_type,
+            len(self.possible_moves) == len(other.possible_moves),
+            all([self.possible_moves[i] == other.possible_moves[i] for i in range(len(self.possible_moves))]),
+        ])
 
     @staticmethod
     def from_json(obj):

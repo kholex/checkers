@@ -34,7 +34,11 @@ async def _server_communication(reader, writer, canvas_field: CanvasField, recei
             if q is send:
                 send = asyncio.create_task(reader.readline())
                 request = q.result().decode().strip()
-                command_json = json.loads(request)
+                command_json = json.loads(request)  # TODO
+
+                print("Client request:", request)
+                print("Client command_json:", command_json)
+
                 if command_json["type"] == "field_state_command":
                     field_state = FieldStateCommand.from_json(command_json)
                     canvas_field.init_checkers(field_state.checkers)
@@ -52,10 +56,11 @@ async def _server_communication(reader, writer, canvas_field: CanvasField, recei
                     if not authorize.result:
                         login_entry['state'] = tk.NORMAL
                         login_button['state'] = tk.NORMAL
-                    print(authorize.result)
+                    print("Client authorize.result:", authorize.result)
             elif q is receive:
                 receive = asyncio.create_task(receive_queue.get())
                 writer.write(f"{q.result()}\n".encode())
+                print("Client receive:", q.result())
                 await writer.drain()
     send.cancel()
     receive.cancel()
@@ -79,13 +84,13 @@ async def _start_communication(canvas_field: CanvasField, receive_queue: asyncio
             canvas_field.canvas.tag_lower(connecting_rectangle, connecting_label)
 
         try:
-            reader, writer = await asyncio.open_connection('127.0.0.1', 5000)
+            reader, writer = await asyncio.open_connection('127.0.0.1', 6000)
             canvas_field.canvas.delete(connecting_label)
             canvas_field.canvas.delete(connecting_rectangle)
             connecting_label = None
             await _server_communication(reader, writer, canvas_field, receive_queue, login_entry, login_button)
         except Exception as ex:
-            print(ex)
+            print("Client exception:", ex)
             await asyncio.sleep(1)
 
 

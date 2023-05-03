@@ -1,4 +1,6 @@
 """This module describes part of contracts with server about checker info."""
+import json
+
 from .checker_type import CheckerType
 from .possible_move import PossibleMove
 
@@ -36,6 +38,17 @@ class Checker:
             len(self.possible_moves) == len(other.possible_moves),
             all([self.possible_moves[i] == other.possible_moves[i] for i in range(len(self.possible_moves))]),
         ])
+    
+    def to_json(self):
+        """Object to json."""
+        return {
+            "checker_num": self.checker_num,
+            "your_checker": self.your_checker,
+            "x": self.x,
+            "y": self.y,
+            "checker_type": self.checker_type.value,
+            "possible_moves": [move.to_json() for move in self.possible_moves],
+        }
 
     @staticmethod
     def from_json(obj):

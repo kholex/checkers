@@ -33,7 +33,7 @@ class CanvasField:
                     y_0,
                     x_1,
                     y_1,
-                    fill=(black if (i + j) % 2 == 0 else white),
+                    fill=(black if (i + j) % 2 == 1 else white),
                     width=0,
                 )
 

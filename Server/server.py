@@ -4,9 +4,12 @@ import asyncio
 from copy import deepcopy
 
 from .field_state import FieldState
+from Client.contracts.value_objects.checker_type import CheckerType
 from Client.contracts.field_state_command import FieldStateCommand
 from Client.contracts.value_objects.possible_move import PossibleMove
 
+WHITE_CHECKERS = [CheckerType.WHITE, CheckerType.WHITE_SUPER]
+BLACK_CHECKERS = [CheckerType.BLACK, CheckerType.BLACK_SUPER]
 
 clients = {}
 # clients_login = {}
@@ -39,14 +42,13 @@ async def chat(reader, writer):
                 if command == "authorize_command":
 
                     if len(client_colors) == 1:
-                        client_colors[me] = "black"
+                        client_colors[me] = BLACK_CHECKERS
                         inv_client_colors["black"] = me
 
                         # TODO: fix govnokod
                         checkers = deepcopy(game_state.checkers)
                         for checker in checkers:
-                            checker.your_checker = not checker.your_checker
-                            checker.possible_moves = []
+                            checker.your_checker = checker.checker_type in client_colors[me]
 
                         await clients[me].put(
                             json.dumps(
@@ -57,13 +59,17 @@ async def chat(reader, writer):
                         )
 
                     if len(client_colors) == 0:
-                        client_colors[me] = "white"
+                        client_colors[me] = WHITE_CHECKERS
                         inv_client_colors["white"] = me
+
+                        checkers = deepcopy(game_state.checkers)
+                        for checker in checkers:
+                            checker.your_checker = checker.checker_type in client_colors[me]
 
                         await clients[me].put(
                             json.dumps(
                                 FieldStateCommand(
-                                    game_state.checkers
+                                    checkers
                                 ).to_json()
                             )
                         )
@@ -73,7 +79,7 @@ async def chat(reader, writer):
                 elif command == "move_command":
 
                     user_color = client_colors[me]
-                    openent_color = "black" if user_color == "white" else "white"
+                    openent_color = "black" if user_color == WHITE_CHECKERS else "white"
                     print("Server user_color:", user_color)
                     print("Server openent_color:", openent_color)
 
@@ -95,8 +101,7 @@ async def chat(reader, writer):
                     # TODO: fix govnokod
                     checkers = deepcopy(game_state.checkers)
                     for checker in checkers:
-                        checker.your_checker = not checker.your_checker
-                        checker.possible_moves = []
+                        checker.your_checker = checker.checker_type in client_colors[me]
 
                     await clients[me].put(
                         json.dumps(
@@ -108,8 +113,7 @@ async def chat(reader, writer):
 
                     # TODO: fix govnokod
                     for checker in game_state.checkers:
-                        checker.your_checker = not checker.your_checker
-                        # checker.possible_moves = []
+                        checker.your_checker = checker.checker_type in client_colors[oponent_id]
 
                     await clients[oponent_id].put(
                         json.dumps(

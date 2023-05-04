@@ -19,13 +19,16 @@ class PossibleMove:
         self.remove_checker_num: int = remove_checker_num
 
     def __repr__(self):
+        """Pretty print."""
         # TODO: mayby add new_type and remove_checker_num
         return f"PossibleMove(x={self.x}, y={self.y})"
 
     def __str__(self):
+        """Pretty print."""
         return self.__repr__()
 
     def __eq__(self, other):
+        """Compare PossibleMoves."""
         if not isinstance(other, PossibleMove):
             # don't attempt to compare against unrelated types
             return NotImplemented

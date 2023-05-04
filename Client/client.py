@@ -33,6 +33,7 @@ async def _server_communication(
     login_entry: tk.Entry,
     login_button: tk.Button,
 ):
+    """Server communicator."""
     send = asyncio.create_task(reader.readline())
     receive = asyncio.create_task(receive_queue.get())
     command = ""
@@ -93,6 +94,7 @@ async def _start_communication(
     login_entry: tk.Entry,
     login_button: tk.Button,
 ):
+    """Server communicator launcher."""
     connecting_label = None
     while True:
         if connecting_label is None:
@@ -123,6 +125,7 @@ async def _start_communication(
 
 
 def _login_form(screen: tk.Tk, queue: asyncio.Queue):
+    """Login form."""
     login_canvas = tk.Canvas(screen, width=field_size, height=field_size // 5)
     login_canvas.pack()
     # username label and text entry box

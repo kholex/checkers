@@ -24,12 +24,15 @@ class Checker:
         self.possible_moves: list[PossibleMove] = possible_moves
 
     def __repr__(self):
+        """Pretty print."""
         return f"Checker(num={self.checker_num}, your_checker={self.your_checker}, x={self.x}, y={self.y}, color={self.checker_type.name}, possible_moves={self.possible_moves})"
 
     def __str__(self):
+        """Pretty print."""
         return self.__repr__()
 
     def __eq__(self, other):
+        """Compare Checkers."""
         if not isinstance(other, Checker):
             # don't attempt to compare against unrelated types
             return NotImplemented

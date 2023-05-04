@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+"""This module is entry point for server app."""
 import asyncio
 import json
 from copy import deepcopy
@@ -17,7 +17,8 @@ inv_client_colors = {}
 game_state = FieldState()
 
 
-async def chat(reader, writer):
+async def communicator(reader, writer):
+    """Client communicator."""
     me = "{}:{}".format(*writer.get_extra_info("peername"))
     print("User:", me)
 

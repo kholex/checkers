@@ -1,35 +1,45 @@
 """This module is entry point for client app."""
-from .canvas_field import CanvasField
-from .canvas_move import CanvasMove
 import asyncio
 import gettext
 import json
+import locale
+import os
 import threading
 import tkinter as tk
 from functools import partial
-import locale
-import os
 
+from .canvas_field import CanvasField
+from .canvas_move import CanvasMove
 from .contracts.authorize_command import AuthorizeCommand
 from .contracts.authorize_response import AuthorizeResponse
 from .contracts.field_state_command import FieldStateCommand
 from .contracts.move_command import MoveCommand
 
 locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
-translation = gettext.translation('checkers', os.path.dirname(__file__), fallback=True, languages=['ru', 'en'])
+translation = gettext.translation(
+    "checkers", os.path.dirname(__file__), fallback=True, languages=["ru", "en"]
+)
 _ = translation.gettext
 
 cell_size = 60
 field_size = cell_size * 8
 
 
-async def _server_communication(reader, writer, canvas_field: CanvasField, receive_queue: asyncio.Queue,
-                                login_entry: tk.Entry, login_button: tk.Button):
+async def _server_communication(
+    reader,
+    writer,
+    canvas_field: CanvasField,
+    receive_queue: asyncio.Queue,
+    login_entry: tk.Entry,
+    login_button: tk.Button,
+):
     send = asyncio.create_task(reader.readline())
     receive = asyncio.create_task(receive_queue.get())
     command = ""
     while not reader.at_eof() and command != "exit":
-        done, pending = await asyncio.wait([send, receive], return_when=asyncio.FIRST_COMPLETED)
+        done, pending = await asyncio.wait(
+            [send, receive], return_when=asyncio.FIRST_COMPLETED
+        )
         for q in done:
             if q is send:
                 send = asyncio.create_task(reader.readline())
@@ -47,15 +57,24 @@ async def _server_communication(reader, writer, canvas_field: CanvasField, recei
                     checker_to_move = canvas_field.checkers[move.checker_num]
                     checker_to_remove_icon = None
                     if move.remove_checker_num is not None:
-                        checker_to_remove = canvas_field.checkers[move.remove_checker_num]
+                        checker_to_remove = canvas_field.checkers[
+                            move.remove_checker_num
+                        ]
                         checker_to_remove_icon = checker_to_remove.icon
-                    checker_to_move.move(CanvasMove(move.x, move.y, move.new_type,
-                                                    move.remove_checker_num, checker_to_remove_icon))
+                    checker_to_move.move(
+                        CanvasMove(
+                            move.x,
+                            move.y,
+                            move.new_type,
+                            move.remove_checker_num,
+                            checker_to_remove_icon,
+                        )
+                    )
                 elif command_json["type"] == "authorize_response":
                     authorize = AuthorizeResponse.from_json(command_json)
                     if not authorize.result:
-                        login_entry['state'] = tk.NORMAL
-                        login_button['state'] = tk.NORMAL
+                        login_entry["state"] = tk.NORMAL
+                        login_button["state"] = tk.NORMAL
                     print("Client authorize.result:", authorize.result)
             elif q is receive:
                 receive = asyncio.create_task(receive_queue.get())
@@ -68,27 +87,36 @@ async def _server_communication(reader, writer, canvas_field: CanvasField, recei
     await writer.wait_closed()
 
 
-async def _start_communication(canvas_field: CanvasField, receive_queue: asyncio.Queue,
-                               login_entry: tk.Entry, login_button: tk.Button):
+async def _start_communication(
+    canvas_field: CanvasField,
+    receive_queue: asyncio.Queue,
+    login_entry: tk.Entry,
+    login_button: tk.Button,
+):
     connecting_label = None
     while True:
         if connecting_label is None:
-            connecting_label = canvas_field.canvas.create_text(canvas_field.size // 2,
-                                                               canvas_field.size // 2,
-                                                               text=_("Connecting to server..."),
-                                                               fill="#f77902",
-                                                               font=('Helvetica', '30', 'bold'))
+            connecting_label = canvas_field.canvas.create_text(
+                canvas_field.size // 2,
+                canvas_field.size // 2,
+                text=_("Connecting to server..."),
+                fill="#f77902",
+                font=("Helvetica", "30", "bold"),
+            )
 
-            connecting_rectangle = canvas_field.canvas.create_rectangle(canvas_field.canvas.bbox(connecting_label),
-                                                                        fill="white")
+            connecting_rectangle = canvas_field.canvas.create_rectangle(
+                canvas_field.canvas.bbox(connecting_label), fill="white"
+            )
             canvas_field.canvas.tag_lower(connecting_rectangle, connecting_label)
 
         try:
-            reader, writer = await asyncio.open_connection('127.0.0.1', 6000)
+            reader, writer = await asyncio.open_connection("127.0.0.1", 6000)
             canvas_field.canvas.delete(connecting_label)
             canvas_field.canvas.delete(connecting_rectangle)
             connecting_label = None
-            await _server_communication(reader, writer, canvas_field, receive_queue, login_entry, login_button)
+            await _server_communication(
+                reader, writer, canvas_field, receive_queue, login_entry, login_button
+            )
         except Exception as ex:
             print("Client exception:", ex)
             await asyncio.sleep(1)
@@ -107,8 +135,8 @@ def _login_form(screen: tk.Tk, queue: asyncio.Queue):
         authorize_command_json = AuthorizeCommand(login.get()).to_json()
         queue.put_nowait(authorize_command_json)
         queue._loop._write_to_self()
-        login_button['state'] = tk.DISABLED
-        login_entry['state'] = tk.DISABLED
+        login_button["state"] = tk.DISABLED
+        login_entry["state"] = tk.DISABLED
 
         return
 
@@ -132,9 +160,14 @@ def main() -> None:
 
     login_entry, login_button = _login_form(screen, queue)
 
-    screen.title(_('Checkers'))
+    screen.title(_("Checkers"))
     screen.resizable(0, 0)
 
-    screen.after(0, threading.Thread(target=asyncio.run, args=(_start_communication(field, queue, login_entry,
-                                                                                    login_button),)).start())
+    screen.after(
+        0,
+        threading.Thread(
+            target=asyncio.run,
+            args=(_start_communication(field, queue, login_entry, login_button),),
+        ).start(),
+    )
     screen.mainloop()

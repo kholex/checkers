@@ -1,5 +1,4 @@
 """This module describes part of contracts with server about field state."""
-import json
 from .value_objects.checker import Checker
 
 
@@ -21,5 +20,5 @@ class FieldStateCommand:
         """Serialize object to json."""
         return {
             "type": self.type,
-            "checkers": [checker.to_json() for checker in self.checkers]
+            "checkers": [checker.to_json() for checker in self.checkers],
         }

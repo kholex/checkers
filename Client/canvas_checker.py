@@ -1,27 +1,38 @@
 """This module realize work with checker on canvas."""
-from PIL import Image, ImageTk
-from time import sleep
-import pathlib
 import os
+import pathlib
 import tkinter as tk
+from time import sleep
+
+from PIL import Image, ImageTk
+
 from .canvas_move import CanvasMove
 from .contracts.value_objects.checker_type import CheckerType
 
 
 class CanvasChecker:
     """Checker on canvas field."""
+
     cur_file_path = pathlib.Path(__file__).parent.resolve()
     _icons_files = {
-        CheckerType.BLACK: 'images/black.png',
-        CheckerType.WHITE: 'images/white.png',
-        CheckerType.BLACK_SUPER: 'images/black_super.png',
-        CheckerType.WHITE_SUPER: 'images/white_super.png',
+        CheckerType.BLACK: "images/black.png",
+        CheckerType.WHITE: "images/white.png",
+        CheckerType.BLACK_SUPER: "images/black_super.png",
+        CheckerType.WHITE_SUPER: "images/white_super.png",
     }
     for key in _icons_files:
         _icons_files[key] = os.path.join(cur_file_path, _icons_files[key])
 
-    def __init__(self, canvas: tk.Canvas, number: int, your_checker: bool, x: int, y: int, size: int,
-                 checker_type: CheckerType):
+    def __init__(
+        self,
+        canvas: tk.Canvas,
+        number: int,
+        your_checker: bool,
+        x: int,
+        y: int,
+        size: int,
+        checker_type: CheckerType,
+    ):
         """Initialize checker on canvas."""
         self.your_checker = your_checker
         self.moves: list[CanvasMove] = []
@@ -33,9 +44,11 @@ class CanvasChecker:
         self._super = False
         self._type = checker_type
         self._icon_png = self._upload_icon(size, checker_type)
-        self.icon = self._canvas.create_image(self.x * self._size + self._size // 2,
-                                              self.y * self._size + self._size // 2,
-                                              image=self._icon_png)
+        self.icon = self._canvas.create_image(
+            self.x * self._size + self._size // 2,
+            self.y * self._size + self._size // 2,
+            image=self._icon_png,
+        )
         self._possible_moves_selection: list[int] = []
 
     def move(self, move: CanvasMove):
@@ -57,9 +70,11 @@ class CanvasChecker:
         if move.new_type:
             self._canvas.delete(self.icon)
             self._icon_png = self._upload_icon(self._size, move.new_type)
-            self.icon = self._canvas.create_image(self.x * self._size + self._size // 2,
-                                                  self.y * self._size + self._size // 2,
-                                                  image=self._icon_png)
+            self.icon = self._canvas.create_image(
+                self.x * self._size + self._size // 2,
+                self.y * self._size + self._size // 2,
+                image=self._icon_png,
+            )
             self._canvas.update()
 
     def set_possible_moves(self, moves: list[CanvasMove]):
@@ -80,13 +95,20 @@ class CanvasChecker:
     def draw_possible_moves(self):
         """Draw possible moves for checker, for example, if user selected checker."""
         for move in self.moves:
-            rect = self._canvas.create_rectangle(move.x * self._size, move.y * self._size,
-                                                 move.x * self._size + self._size, move.y * self._size + self._size,
-                                                 outline='#51ed13',
-                                                 width=4, tag='border')
+            rect = self._canvas.create_rectangle(
+                move.x * self._size,
+                move.y * self._size,
+                move.x * self._size + self._size,
+                move.y * self._size + self._size,
+                outline="#51ed13",
+                width=4,
+                tag="border",
+            )
             self._possible_moves_selection.append(rect)
 
     @staticmethod
     def _upload_icon(size: int, checker_type: CheckerType):
         file_name = CanvasChecker._icons_files[checker_type]
-        return ImageTk.PhotoImage(Image.open(file_name).resize((size - 4, size - 4), Image.ANTIALIAS))
+        return ImageTk.PhotoImage(
+            Image.open(file_name).resize((size - 4, size - 4), Image.ANTIALIAS)
+        )

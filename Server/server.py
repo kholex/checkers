@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import json
 import asyncio
+from copy import deepcopy
 
-from .game import generate_new_game, get_possible_moves
+from .field_state import FieldState
 from Client.contracts.field_state_command import FieldStateCommand
 from Client.contracts.value_objects.possible_move import PossibleMove
 
@@ -13,7 +14,7 @@ clients = {}
 client_colors = {}
 inv_client_colors = {}
 
-game_state = {}
+game_state = FieldState()
 
 
 async def chat(reader, writer):
@@ -37,36 +38,39 @@ async def chat(reader, writer):
 
                 if command == "authorize_command":
 
-                    white_checkers_list, black_checkers_list = generate_new_game()
-
                     if len(client_colors) == 1:
                         client_colors[me] = "black"
                         inv_client_colors["black"] = me
 
-                        game_state["black"] = black_checkers_list
+                        # TODO: fix govnokod
+                        checkers = deepcopy(game_state.checkers)
+                        for checker in checkers:
+                            checker.your_checker = not checker.your_checker
+                            checker.possible_moves = []
 
                         await clients[me].put(
-                            json.dumps(FieldStateCommand(black_checkers_list).to_json())
+                            json.dumps(
+                                FieldStateCommand(
+                                    checkers
+                                ).to_json()
+                            )
                         )
 
                     if len(client_colors) == 0:
                         client_colors[me] = "white"
                         inv_client_colors["white"] = me
 
-                        game_state["white"] = white_checkers_list
-
-                        for checker in white_checkers_list:
-                            possible_moves = get_possible_moves(checker)
-                            checker.possible_moves = possible_moves
-
                         await clients[me].put(
-                            json.dumps(FieldStateCommand(white_checkers_list).to_json())
+                            json.dumps(
+                                FieldStateCommand(
+                                    game_state.checkers
+                                ).to_json()
+                            )
                         )
 
                     print("Server client_colors:", client_colors)
 
                 elif command == "move_command":
-                    print("Server game_state.keys():", game_state.keys())
 
                     user_color = client_colors[me]
                     openent_color = "black" if user_color == "white" else "white"
@@ -79,30 +83,43 @@ async def chat(reader, writer):
                     move = PossibleMove.from_json(request)
                     print("Server move:", move)
 
-                    for checker in game_state[user_color]:
-                        checker.possible_moves = []
-                        if checker.checker_num == checker_num:
-                            checker.x = move.x
-                            checker.y = move.y
+                    game_state.make_move(checker_num, move)
+                    print("Server game_state.make_move Done!")
 
                     oponent_id = inv_client_colors[openent_color]
                     print('Server oponent_id', oponent_id)
 
-                    for checker in game_state[openent_color]:
-                        possible_moves = get_possible_moves(checker)
-                        checker.possible_moves = possible_moves
-                        if checker.checker_num == checker_num:
-                            checker.x = move.x
-                            checker.y = move.y
-
+                    # TODO: remove debug statement
                     await clients[oponent_id].put(request_json)
 
+                    # TODO: fix govnokod
+                    checkers = deepcopy(game_state.checkers)
+                    for checker in checkers:
+                        checker.your_checker = not checker.your_checker
+                        checker.possible_moves = []
+
                     await clients[me].put(
-                        json.dumps(FieldStateCommand(game_state[user_color]).to_json())
+                        json.dumps(
+                            FieldStateCommand(
+                                checkers
+                            ).to_json()
+                        )
                     )
+
+                    # TODO: fix govnokod
+                    for checker in game_state.checkers:
+                        checker.your_checker = not checker.your_checker
+                        # checker.possible_moves = []
+
                     await clients[oponent_id].put(
-                        json.dumps(FieldStateCommand(game_state[openent_color]).to_json())
+                        json.dumps(
+                            FieldStateCommand(
+                                game_state.checkers
+                            ).to_json()
+                        )
                     )
+
+                    print('Server move_command Done!')
 
             elif q is receive:
                 receive = asyncio.create_task(clients[me].get())

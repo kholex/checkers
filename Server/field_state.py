@@ -3,7 +3,7 @@ from typing import List
 from Client.contracts.value_objects.checker import Checker
 from Client.contracts.value_objects.checker_type import CheckerType
 from Client.contracts.value_objects.possible_move import PossibleMove
-from value_objects.point import Point
+from .value_objects.point import Point
 
 MOVE_OFFSETS = [Point(-1, -1), Point(1, -1), Point(-1, 1), Point(1, 1)]
 
@@ -18,11 +18,7 @@ class FieldState:
     self.checkers = self.init_state()
     self.calculate_possible_moves()
 
-  def reverse_checker(checker):
-      checker.your_checker = not checker.your_checker
-      return checker
-
-  def init_state(self):
+  def init_state(self) -> List[Checker]:
     i = 0
 
     checkers_list: List[Checker] = []
@@ -55,7 +51,7 @@ class FieldState:
 
     return checkers_list
 
-  def make_move(self, checker_num: int, move: PossibleMove):
+  def make_move(self, checker_num: int, move: PossibleMove) -> None:
 
     checker = first_true(self.checkers, False,
                          lambda c: c.checker_num == checker_num)
@@ -75,14 +71,14 @@ class FieldState:
 
     self.calculate_possible_moves()
 
-    return self.checkers
-
-  def make_new_move(self,
-                    col,
-                    row,
-                    now_type,
-                    new_type=None,
-                    field_remove=None):
+  def make_new_move(
+    self,
+    col,
+    row,
+    now_type,
+    new_type=None,
+    field_remove=None,
+  ):
 
     if (now_type == CheckerType.BLACK):
       new_type = type if row == 0 else None
@@ -94,11 +90,11 @@ class FieldState:
 
     return None
 
-  def calculate_possible_moves_without_super(self, checker):
+  def calculate_possible_moves_without_super(self, checker: Checker) -> None:
     row = checker.y
     col = checker.x
     moves = []
-    requiredMoves = False
+    requiredMoves = False  # TODO: remove unused
     rowVal = -1 if checker.checker_type == CheckerType.BLACK else 1
     super = None
     if checker.checker_type == CheckerType.WHITE:
@@ -140,10 +136,8 @@ class FieldState:
 
     checker.possible_moves = moves
 
-  def calculate_possible_moves(self):
+  def calculate_possible_moves(self) -> None:
     for checker in self.checkers:
 
-      if checker.checker_type == CheckerType.BLACK or checker.checker_type == CheckerType.WHITE:
-        self.calculate_possible_moves_without_super(checker)
       if checker.checker_type == CheckerType.BLACK or checker.checker_type == CheckerType.WHITE:
         self.calculate_possible_moves_without_super(checker)

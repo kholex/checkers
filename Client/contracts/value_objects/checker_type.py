@@ -9,3 +9,4 @@ class CheckerType(Enum):
     WHITE = 1
     BLACK_SUPER = 2
     WHITE_SUPER = 3
+    NONE = 4

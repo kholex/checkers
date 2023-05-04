@@ -13,7 +13,7 @@ class AuthorizeCommand:
     @staticmethod
     def from_json(obj):
         """Deserialize object from json."""
-        return AuthorizeCommand(obj['login'])
+        return AuthorizeCommand(obj["login"])
 
     def to_json(self):
         """Serialize object to json."""

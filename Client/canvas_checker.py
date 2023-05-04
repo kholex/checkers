@@ -1,6 +1,8 @@
 """This module realize work with checker on canvas."""
 from PIL import Image, ImageTk
 from time import sleep
+import pathlib
+import os
 import tkinter as tk
 from .canvas_move import CanvasMove
 from .contracts.value_objects.checker_type import CheckerType
@@ -8,13 +10,15 @@ from .contracts.value_objects.checker_type import CheckerType
 
 class CanvasChecker:
     """Checker on canvas field."""
-
+    cur_file_path = pathlib.Path(__file__).parent.resolve()
     _icons_files = {
         CheckerType.BLACK: 'images/black.png',
         CheckerType.WHITE: 'images/white.png',
         CheckerType.BLACK_SUPER: 'images/black_super.png',
         CheckerType.WHITE_SUPER: 'images/white_super.png',
     }
+    for key in _icons_files:
+        _icons_files[key] = os.path.join(cur_file_path, _icons_files[key])
 
     def __init__(self, canvas: tk.Canvas, number: int, your_checker: bool, x: int, y: int, size: int,
                  checker_type: CheckerType):

@@ -1,1 +1,4 @@
-coverage==7.2.3
+pillow
+tk
+pyfiglet
+pathlib

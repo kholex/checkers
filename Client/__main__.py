@@ -1,6 +1,4 @@
 """This module is entrypoint for client app."""
-import sys
-sys.path.insert(0, ".")  # TODO: remove it
 
 from Client.client import main
 

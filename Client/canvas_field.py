@@ -31,10 +31,8 @@ class CanvasField:
 
     def init_checkers(self, checkers: list[Checker]):
         """Initialize checkers on field."""
-        for checker in self.checkers.values():
-            checker.clear()
-
-        self.checkers.clear()
+        old_checkers = self.checkers
+        self.checkers = {}
         for checker in checkers:
             self.checkers[checker.checker_num] = CanvasChecker(
                 self.canvas, checker.checker_num, checker.your_checker, checker.x, checker.y, self.cell_size,
@@ -45,6 +43,11 @@ class CanvasField:
                                 self.checkers[move.remove_checker_num].icon if move.remove_checker_num else None)
                      for move in checker.possible_moves]
             self.checkers[checker.checker_num].set_possible_moves(moves)
+
+        for checker in old_checkers.values():
+            checker.clear()
+        old_checkers.clear()
+
         self.canvas.update()
 
     def _click(self, event: tk.Event):

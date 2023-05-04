@@ -1,13 +1,13 @@
 import unittest
 from copy import deepcopy
 
-from server.utils import generate_new_game, Checker, CheckerType, PossibleMove
+from Server.game import generate_new_game, Checker, CheckerType, PossibleMove
 
 
 class TestServerUtils(unittest.TestCase):
 
     def test_generate_new_game(self):
-        
+
         white_checkers_list, black_checkers_list = generate_new_game()
 
         checker_list_true = [
@@ -43,7 +43,7 @@ class TestServerUtils(unittest.TestCase):
                 checker.your_checker = True
             elif checker.checker_type == CheckerType.BLACK:
                 checker.your_checker = False
-        
+
         black_checkers_list_true = deepcopy(checker_list_true)
         for checker in black_checkers_list_true:
             if checker.checker_type == CheckerType.WHITE:

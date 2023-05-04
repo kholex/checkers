@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
-import json
+"""This module is entry point for server app."""
 import asyncio
+import json
 from copy import deepcopy
 
 from .field_state import FieldState
@@ -11,6 +11,7 @@ from Client.contracts.value_objects.possible_move import PossibleMove
 WHITE_CHECKERS = [CheckerType.WHITE, CheckerType.WHITE_SUPER]
 BLACK_CHECKERS = [CheckerType.BLACK, CheckerType.BLACK_SUPER]
 
+
 clients = {}
 # clients_login = {}
 
@@ -20,8 +21,9 @@ inv_client_colors = {}
 game_state = FieldState()
 
 
-async def chat(reader, writer):
-    me = "{}:{}".format(*writer.get_extra_info('peername'))
+async def communicator(reader, writer):
+    """Client communicator."""
+    me = "{}:{}".format(*writer.get_extra_info("peername"))
     print("User:", me)
 
     clients[me] = asyncio.Queue()
@@ -29,7 +31,9 @@ async def chat(reader, writer):
     receive = asyncio.create_task(clients[me].get())
     command = ""
     while not reader.at_eof() and command != "exit":
-        done, _ = await asyncio.wait([send, receive], return_when=asyncio.FIRST_COMPLETED)
+        done, _ = await asyncio.wait(
+            [send, receive], return_when=asyncio.FIRST_COMPLETED
+        )
         for q in done:
             if q is send:
                 send = asyncio.create_task(reader.readline())
@@ -51,11 +55,7 @@ async def chat(reader, writer):
                             checker.your_checker = checker.checker_type in client_colors[me]
 
                         await clients[me].put(
-                            json.dumps(
-                                FieldStateCommand(
-                                    checkers
-                                ).to_json()
-                            )
+                            json.dumps(FieldStateCommand(checkers).to_json())
                         )
 
                     if len(client_colors) == 0:
@@ -93,7 +93,7 @@ async def chat(reader, writer):
                     print("Server game_state.make_move Done!")
 
                     oponent_id = inv_client_colors[openent_color]
-                    print('Server oponent_id', oponent_id)
+                    print("Server oponent_id", oponent_id)
 
                     # TODO: remove debug statement
                     await clients[oponent_id].put(request_json)
@@ -104,11 +104,7 @@ async def chat(reader, writer):
                         checker.your_checker = checker.checker_type in client_colors[me]
 
                     await clients[me].put(
-                        json.dumps(
-                            FieldStateCommand(
-                                checkers
-                            ).to_json()
-                        )
+                        json.dumps(FieldStateCommand(checkers).to_json())
                     )
 
                     # TODO: fix govnokod
@@ -116,14 +112,10 @@ async def chat(reader, writer):
                         checker.your_checker = checker.checker_type in client_colors[oponent_id]
 
                     await clients[oponent_id].put(
-                        json.dumps(
-                            FieldStateCommand(
-                                game_state.checkers
-                            ).to_json()
-                        )
+                        json.dumps(FieldStateCommand(game_state.checkers).to_json())
                     )
 
-                    print('Server move_command Done!')
+                    print("Server move_command Done!")
 
             elif q is receive:
                 receive = asyncio.create_task(clients[me].get())

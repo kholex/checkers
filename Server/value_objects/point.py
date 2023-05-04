@@ -13,9 +13,6 @@ class Point:
 
     def __eq__(self, other):
         if isinstance(other, Point):
-            return (
-                self.x == other.x and
-                self.y == other.y
-            )
+            return self.x == other.x and self.y == other.y
 
         return NotImplemented

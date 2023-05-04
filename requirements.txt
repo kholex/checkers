@@ -1,4 +1,6 @@
-pillow
-tk
-pyfiglet
-pathlib
+coverage==7.2.3
+doit==0.36.0
+pathlib==1.0.1
+Pillow==9.5.0
+pyfiglet==0.8.post1
+tk==0.1.0

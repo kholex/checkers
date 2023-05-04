@@ -1,10 +1,12 @@
 from Client.contracts.value_objects.checker import Checker
 from Client.contracts.value_objects.checker_type import CheckerType
 from Client.contracts.value_objects.possible_move import PossibleMove
+
 from value_objects.point import Point
 from value_objects.side_type import SideType
 from functools import reduce
 from typing import List
+
 
 # Массивы типов белых и чёрных шашек [Обычная пешка, дамка]
 WHITE_CHECKERS = [CheckerType.WHITE, CheckerType.WHITE_SUPER]

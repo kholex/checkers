@@ -19,7 +19,7 @@ class MoveCommand:
     def from_json(obj):
         """Deserialize object from json."""
         checker_num, x, y = obj['checker_num'], obj['x'], obj['y']
-        new_type = CheckerType(obj['new_type']) if 'new_type' in obj else None
+        new_type = CheckerType(obj['new_type']) if ('new_type' in obj) and (obj['new_type'] is not None) else None
         remove_checker_num = obj['remove_checker_num'] if 'remove_checker_num' in obj else None
 
         return MoveCommand(checker_num, x, y, new_type, remove_checker_num)

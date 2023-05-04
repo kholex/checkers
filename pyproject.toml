@@ -33,4 +33,4 @@ build-backend = "setuptools.build_meta"
 Client = "Client"
 
 [tool.setuptools.package-data]
-Client = ["ru/*/*.mo"]
+Client = ["ru/*/*.mo", "images/*.png"]

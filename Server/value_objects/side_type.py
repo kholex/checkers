@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+
 class SideType(Enum):
     WHITE = auto()
     BLACK = auto()

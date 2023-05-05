@@ -1,11 +1,12 @@
+from functools import reduce
+from typing import List
+
 from Client.contracts.value_objects.checker import Checker
 from Client.contracts.value_objects.checker_type import CheckerType
 from Client.contracts.value_objects.possible_move import PossibleMove
 
-from value_objects.point import Point
-from value_objects.side_type import SideType
-from functools import reduce
-from typing import List
+from .value_objects.point import Point
+from .value_objects.side_type import SideType
 
 
 # Массивы типов белых и чёрных шашек [Обычная пешка, дамка]
@@ -47,9 +48,10 @@ class FieldState:
                 if (y + x) % 2:
                     if y < 3:
                         self.__checkers[y, x] = Checker(i, False, x, y, CheckerType.BLACK, [])
+                        i += 1
                     elif y >= self.y_size - 3:
                         self.__checkers[y, x] = Checker(i, False, x, y, CheckerType.WHITE, [])
-                    i += 1
+                        i += 1
 
     def type_at(self, x: int, y: int) -> CheckerType:
         """Получение типа шашки на поле по координатам"""
@@ -210,8 +212,7 @@ class FieldState:
                         for shift in range(1, self.size):
                             if not (self.is_within(x + offset.x * shift, y + offset.y * shift)): continue
 
-                            if (self.type_at(x + offset.x * shift,
-                                                     y + offset.y * shift) == CheckerType.NONE):
+                            if (self.type_at(x + offset.x * shift, y + offset.y * shift) == CheckerType.NONE):
                                 moves_list.append(PossibleMove(x + offset.x * shift, y + offset.y * shift))
                             else:
                                 break

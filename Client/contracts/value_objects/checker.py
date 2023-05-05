@@ -25,7 +25,7 @@ class Checker:
 
     def __repr__(self):
         """Pretty print."""
-        return f"Checker(num={self.checker_num}, your_checker={self.your_checker}, x={self.x}, y={self.y}, color={self.checker_type.name}, possible_moves={self.possible_moves})"
+        return f"Checker(checker_num={self.checker_num}, your_checker={self.your_checker}, x={self.x}, y={self.y}, checker_type={self.checker_type.name}, possible_moves={self.possible_moves})"
 
     def __str__(self):
         """Pretty print."""
@@ -53,6 +53,17 @@ class Checker:
                 ),
             ]
         )
+
+    def __hash__(self):
+        """Compare Checkers."""
+        return hash((
+            self.checker_num,
+            self.your_checker,
+            self.x,
+            self.y,
+            self.checker_type,
+            tuple(self.possible_moves),
+        ))
 
     def to_json(self):
         """Object to json."""

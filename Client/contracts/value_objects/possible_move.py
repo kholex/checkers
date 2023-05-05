@@ -42,6 +42,15 @@ class PossibleMove:
             ]
         )
 
+    def __hash__(self):
+        """Compare PossibleMoves."""
+        return hash((
+            self.x,
+            self.y,
+            self.new_type,
+            self.remove_checker_num,
+        ))
+
     def to_json(self):
         """Object to json."""
         res = {

@@ -1,5 +1,6 @@
-from functools import reduce
+"""This module is field state of game."""
 from typing import List
+from functools import reduce
 
 from Client.contracts.value_objects.checker import Checker
 from Client.contracts.value_objects.checker_type import CheckerType
@@ -16,7 +17,10 @@ MOVE_OFFSETS = [Point(-1, -1), Point(1, -1), Point(-1, 1), Point(1, 1)]
 
 
 class FieldState:
+    """Field state in the game."""
+
     def __init__(self):
+        """Initialize field state of game."""
         self.__x_size = 8
         self.__y_size = 8
         self.__checkers = {}
@@ -26,22 +30,26 @@ class FieldState:
 
     @property
     def checkers(self) -> List[Checker]:
+        """List of all checkers in game."""
         return list(self.__checkers.values())
 
     @property
     def x_size(self) -> int:
+        """Size of field by axis x."""
         return self.__x_size
 
     @property
     def y_size(self) -> int:
+        """Size of field by axis y."""
         return self.__y_size
 
     @property
     def size(self) -> int:
+        """Size of field in game."""
         return max(self.x_size, self.y_size)
 
     def __generate(self):
-        """Генерация поля с шашками"""
+        """Генерация поля с шашками."""
         i = 0
         for y in range(self.y_size):
             for x in range(self.x_size):
@@ -54,44 +62,45 @@ class FieldState:
                         i += 1
 
     def type_at(self, x: int, y: int) -> CheckerType:
-        """Получение типа шашки на поле по координатам"""
+        """Получение типа шашки на поле по координатам."""
         if (y, x) not in self.__checkers:
             return CheckerType.NONE
         return self.__checkers[y, x].checker_type
 
     def at(self, x: int, y: int) -> Checker:
-        """Получение шашки на поле по координатам"""
+        """Получение шашки на поле по координатам."""
         return self.__checkers[y, x]
 
     def is_within(self, x: int, y: int) -> bool:
-        """Определяет лежит ли точка в пределах поля"""
+        """Определяет лежит ли точка в пределах поля."""
         return 0 <= x < self.x_size and 0 <= y < self.y_size
 
     @property
     def white_checkers_count(self) -> int:
-        """Количество белых шашек на поле"""
+        """Количество белых шашек на поле."""
         return sum(reduce(lambda acc, checker: acc + (checker.type in WHITE_CHECKERS), checkers, 0) for checkers in
                    self.__checkers)
 
     @property
     def black_checkers_count(self) -> int:
-        """Количество чёрных шашек на поле"""
+        """Количество чёрных шашек на поле."""
         return sum(reduce(lambda acc, checker: acc + (checker.type in BLACK_CHECKERS), checkers, 0) for checkers in
                    self.__checkers)
 
     @property
     def white_score(self) -> int:
-        """Счёт белых"""
+        """Счёт белых."""
         return sum(reduce(lambda acc, checker: acc + (checker.type == CheckerType.WHITE) + (
                 checker.type == CheckerType.WHITE_SUPER) * 3, checkers, 0) for checkers in self.__checkers)
 
     @property
     def black_score(self) -> int:
-        """Счёт чёрных"""
+        """Счёт чёрных."""
         return sum(reduce(lambda acc, checker: acc + (checker.type == CheckerType.BLACK) + (
                 checker.type == CheckerType.BLACK_SUPER) * 3, checkers, 0) for checkers in self.__checkers)
 
     def make_move(self, checker_num: int, move: PossibleMove):
+        """Make move in game."""
         checker = next((x for x in self.__checkers.values() if x.checker_num == checker_num), None)
         checker_move = next((m for m in checker.possible_moves if m.x == move.x and m.y == move.y), None)
 
@@ -114,14 +123,13 @@ class FieldState:
         self.__update_moves(self.__side)
 
     def __update_moves(self, side: SideType) -> None:
-        """Получение списка ходов"""
+        """Получение списка ходов."""
         has_required_moves = self.__update_required_moves(side)
         if not has_required_moves:
             self.__update_optional_moves(side)
 
     def __update_required_moves(self, side: SideType) -> bool:
-        """Получение списка обязательных ходов"""
-
+        """Получение списка обязательных ходов."""
         # Определение типов шашек
         if side == SideType.WHITE:
             friendly_checkers = WHITE_CHECKERS
@@ -139,10 +147,11 @@ class FieldState:
                 # Для обычной шашки
                 if self.type_at(x, y) == friendly_checkers[0]:
                     for offset in MOVE_OFFSETS:
-                        if not (self.is_within(x + offset.x * 2, y + offset.y * 2)): continue
+                        if not (self.is_within(x + offset.x * 2, y + offset.y * 2)):
+                            continue
 
-                        if self.type_at(x + offset.x, y + offset.y) in enemy_checkers and \
-                            self.type_at(x + offset.x * 2, y + offset.y * 2) == CheckerType.NONE:
+                        if self.type_at(x + offset.x, y + offset.y) in enemy_checkers and self.type_at(
+                                x + offset.x * 2, y + offset.y * 2) == CheckerType.NONE:
                             has_required_moves = True
                             checker_to_remove = self.at(x + offset.x, y + offset.y)
                             moves_list.append(PossibleMove(x + offset.x * 2, y + offset.y * 2, None, checker_to_remove.checker_num))
@@ -151,12 +160,14 @@ class FieldState:
                 # Для дамки
                 elif self.type_at(x, y) == friendly_checkers[1]:
                     for offset in MOVE_OFFSETS:
-                        if not (self.is_within(x + offset.x * 2, y + offset.y * 2)): continue
+                        if not (self.is_within(x + offset.x * 2, y + offset.y * 2)):
+                            continue
 
                         enemy_checker_on_way = None
 
                         for shift in range(1, self.size):
-                            if not (self.is_within(x + offset.x * shift, y + offset.y * shift)): continue
+                            if not (self.is_within(x + offset.x * shift, y + offset.y * shift)):
+                                continue
 
                             # Если на пути не было вражеской шашки
                             if not enemy_checker_on_way:
@@ -182,8 +193,7 @@ class FieldState:
         return has_required_moves
 
     def __update_optional_moves(self, side: SideType) -> None:
-        """Получение списка необязательных ходов"""
-
+        """Получение списка необязательных ходов."""
         # Определение типов шашек
         if side == SideType.WHITE:
             friendly_checkers = WHITE_CHECKERS
@@ -198,7 +208,8 @@ class FieldState:
                 # Для обычной шашки
                 if self.type_at(x, y) == friendly_checkers[0]:
                     for offset in MOVE_OFFSETS[:2] if side == SideType.WHITE else MOVE_OFFSETS[2:]:
-                        if not (self.is_within(x + offset.x, y + offset.y)): continue
+                        if not (self.is_within(x + offset.x, y + offset.y)):
+                            continue
 
                         if self.type_at(x + offset.x, y + offset.y) == CheckerType.NONE:
                             moves_list.append(PossibleMove(x + offset.x, y + offset.y))
@@ -207,12 +218,14 @@ class FieldState:
                 # Для дамки
                 elif self.type_at(x, y) == friendly_checkers[1]:
                     for offset in MOVE_OFFSETS:
-                        if not (self.is_within(x + offset.x, y + offset.y)): continue
+                        if not (self.is_within(x + offset.x, y + offset.y)):
+                            continue
 
                         for shift in range(1, self.size):
-                            if not (self.is_within(x + offset.x * shift, y + offset.y * shift)): continue
+                            if not (self.is_within(x + offset.x * shift, y + offset.y * shift)):
+                                continue
 
-                            if (self.type_at(x + offset.x * shift, y + offset.y * shift) == CheckerType.NONE):
+                            if self.type_at(x + offset.x * shift, y + offset.y * shift) == CheckerType.NONE:
                                 moves_list.append(PossibleMove(x + offset.x * shift, y + offset.y * shift))
                             else:
                                 break
